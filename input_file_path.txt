@@ -3,12 +3,13 @@ MD Automation
 
 Made by Jung Youngwoo
 =========================
-Strucutre file path : 
+Strucutre file name : 
 example.pdb
 
-Simulator parameter file path :
+Simulator parameter file name:
 example.mdp
+minim.mdp
+nvt.mdp
+npt.mdp
 
 Itp file path:
-example_1.itp
-example_2.itp
