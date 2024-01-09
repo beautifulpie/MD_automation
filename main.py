@@ -42,21 +42,32 @@ def main():
 
     itp_files_section = '\n'.join(itp_files_name)
 
-    index_of_forcefield = top_content.find('; Include forcefield parameters')
-    if index_of_forcefield != -1:
-        updated_top_content = (top_content[:index_of_forcefield + len('; Include forcefield parameters')] +
-                               '\n' + '#include \"' + itp_files_section + '\"' + 
-                               top_content[index_of_forcefield + len('; Include forcefield parameters'):])
-    else:
-        updated_top_content = top_content + '\n' + itp_files_section
+    commands = [
+        f'gmx editconf -f {input_molecule}_processed.gro -o {input_molecule}_newbox.gro -c -d 1.0 -bt cubic', # 박스 생성
+        f'gmx solvate -cp {input_molecule}_newbox.gro -cs spc216.gro -o {input_molecule}_solv.gro -p topol.top', # 수분 분자 추가
+    ]
+    for command in commands:
+        md.run_gmx_command(command, "작업 완료")
+        md.print_rotating_bar()
 
-    with open(top_file_path, 'w', encoding='utf-8') as top_file:
-        top_file.write(updated_top_content)
+#    index_of_forcefield = top_content.find('; Include forcefield parameters')
+#    if index_of_forcefield != -1:
+#        updated_top_content = (top_content[:index_of_forcefield + len('; Include forcefield parameters')] +
+#                               '\n' + '#include \"' + itp_files_section + '\"' + 
+#                               top_content[index_of_forcefield + len('; Include forcefield parameters'):])
+#    else:
+#        updated_top_content = top_content + '\n' + itp_files_section
+#    with open(top_file_path, 'w', encoding='utf-8') as top_file:
+#        top_file.write(updated_top_content)
 
-
+    molecule_data = {
+        'Protein_A': 1,
+        'SOL': 10832
+    }
+    md.update_top_file('./' + top_file_path, molecule_data)
 
     commands = [
-        f'gmx grompp -f {minimization_mdp} -c {input_molecule}_solv.gro -p topol.top -o em.tpr',    # 에너지 최적화 준비
+        f'gmx grompp -f {minimization_mdp} -c {input_molecule}_solv.gro -p topol.top -o em.tpr -maxwarn 3',    # 에너지 최적화 준비
         f'gmx mdrun -v -deffnm em',  # 에너지 최적화 실행
         f'gmx grompp -f {nvt_mdp} -c em.gro -p topol.top -o nvt.tpr', # NVT 준비
         f'gmx mdrun -v -deffnm nvt', # NVT 실행

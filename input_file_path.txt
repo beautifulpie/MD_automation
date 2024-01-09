@@ -13,3 +13,4 @@ nvt.mdp
 npt.mdp
 
 Itp file path:
+posre.itp
