@@ -9,22 +9,34 @@ def main():
     top_file_path = "./topol.top"
     pdb_file_path = lines[6].strip()
     mdp_file_path = lines[9].strip('\n')
-    itp_files = lines[12:]
-
+    minimization_mdp = lines[10].strip('\n')
+    nvt_mdp = lines[11].strip('\n')
+    npt_mdp = lines[12].strip('\n')
+    itp_files = lines[15:]
     itp_files_name = md.extract_itp_files_names(itp_files)
 
-    md.print_header()
+    print("====================================")
+    print('\033[1m'+"MD_automation"+'\0333')
+    print("Made by Youngwoo Jung")
+    print("Final update : 2024.01.09")
+    print("====================================")
+
     print(f"Load pdb file : {pdb_file_path}")
     print(f"Load mdp file : {mdp_file_path}")
+    print(f"Load minimization mdp file : {minimization_mdp}")
+    print(f"Load nvt mdp file : {nvt_mdp}")
+    print(f"Load npt mdp file : {npt_mdp}")
+
     print("====================================")
 
     input_molecule = pdb_file_path.replace('.pdb', '')
     print(f"input_molecule : {input_molecule}")
 
     # pdb2gmx 실행
-    pdb2gmx_command = f'gmx pdb2gmx -f {input_molecule}.pdb -o {input_molecule}_processed.gro -water spce -ff oplsaa -p topol.top'
-    md.run_gmx_command(pdb2gmx_command, "pdb2gmx 실행 완료")
-
+    pdb2gmx_command = f'gmx pdb2gmx -f {input_molecule}.pdb -o {input_molecule}_processed.gro -water spce -p topol.top'
+    subprocess.run(pdb2gmx_command, shell=True, check=True)
+    print("pdb2gmx 완료")
+    
     with open(top_file_path, 'r', encoding='utf-8') as top_file:
         top_content = top_file.read()
 
@@ -41,23 +53,22 @@ def main():
     with open(top_file_path, 'w', encoding='utf-8') as top_file:
         top_file.write(updated_top_content)
 
-    # grompp 및 MD 시뮬레이션 실행
+
+
     commands = [
-        f'gmx editconf -f {input_molecule}_processed.gro -o {input_molecule}_newbox.gro -c -d 1.0 -bt cubic',
-        f'gmx solvate -cp {input_molecule}_newbox.gro -cs spc216.gro -o {input_molecule}_solv.gro -p topol.top',
-        f'gmx grompp -f {mdp_file_path} -c {input_molecule}_solv.gro -p topol.top -o em.tpr',
-        f'gmx mdrun -v -deffnm em',
-        f'gmx grompp -f {mdp_file_path} -c em.gro -p topol.top -o nvt.tpr',
-        f'gmx mdrun -v -deffnm nvt',
-        f'gmx grompp -f {mdp_file_path} -c nvt.gro -r nvt.gro -p topol.top -o npt.tpr',
-        f'gmx mdrun -v -deffnm npt',
-        f'gmx grompp -f {mdp_file_path} -c npt.gro -t npt.cpt -p topol.top -o md_0_1.tpr',
-        f'gmx mdrun -v -deffnm md_0_1'
+        f'gmx grompp -f {minimization_mdp} -c {input_molecule}_solv.gro -p topol.top -o em.tpr',    # 에너지 최적화 준비
+        f'gmx mdrun -v -deffnm em',  # 에너지 최적화 실행
+        f'gmx grompp -f {nvt_mdp} -c em.gro -p topol.top -o nvt.tpr', # NVT 준비
+        f'gmx mdrun -v -deffnm nvt', # NVT 실행
+        f'gmx grompp -f {npt_mdp} -c nvt.gro -r nvt.gro -p topol.top -o npt.tpr', # NPT 준비
+        f'gmx mdrun -v -deffnm npt', # NPT 실행
+        f'gmx grompp -f {mdp_file_path} -c npt.gro -t npt.cpt -p topol.top -o md_0_1.tpr', # MD 준비
+        f'gmx mdrun -v -deffnm md_0_1' # MD 실행
     ]
 
     for command in commands:
         md.run_gmx_command(command, "작업 완료")
-        time.sleep(1)
+        md.print_rotating_bar()
 
     # 사용자 입력 및 추가 계산 실행
     user_input = input("계산할 것을 선택하세요. (1: 에너지, 2: RMSD, 3: RMSF, 4: Gyrate) : ")
@@ -67,19 +78,28 @@ def main():
         if option == '1':
             command = f'gmx energy -f md_0_1.edr -o potential.xvg'
             md.run_gmx_command(command, "에너지 계산 완료")
-            time.sleep(10)
+            md.print_rotating_bar()
+            md.print_rotating_bar()
+            md.print_rotating_bar()
+
         elif option == '2':
             command = f'gmx rms -s md_0_1.tpr -f md_0_1.xtc -o rmsd.xvg'
             md.run_gmx_command(command, "RMSD 계산")
-            time.sleep(10)
+            md.print_rotating_bar()
+            md.print_rotating_bar()
+            md.print_rotating_bar()
         elif option == '3':
             command = f'gmx rmsf -s md_0_1.tpr -f md_0_1.xtc -o rmsf.xvg'
             md.run_gmx_command(command, "RMSF 계산 완료")
-            time.sleep(10)
+            md.print_rotating_bar()
+            md.print_rotating_bar()
+            md.print_rotating_bar()
         elif option == '4':
             command = f'gmx gyrate -s md_0_1.tpr -f md_0_1.xtc -o gyrate.xvg'
             md.run_gmx_command(command, "Gyrate 계산 완료")
-            time.sleep(10)
+            md.print_rotating_bar()
+            md.print_rotating_bar()
+            md.print_rotating_bar()
 
     md.cleanup_files()
     print("Job Success!")
