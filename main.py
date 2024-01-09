@@ -69,11 +69,11 @@ def main():
     commands = [
         f'gmx grompp -f {minimization_mdp} -c {input_molecule}_solv.gro -p topol.top -o em.tpr -maxwarn 3',    # 에너지 최적화 준비
         f'gmx mdrun -v -deffnm em',  # 에너지 최적화 실행
-        f'gmx grompp -f {nvt_mdp} -c em.gro -p topol.top -o nvt.tpr', # NVT 준비
+        f'gmx grompp -f {nvt_mdp} -c em.gro -p topol.top -o nvt.tpr -maxwarn 4', # NVT 준비
         f'gmx mdrun -v -deffnm nvt', # NVT 실행
-        f'gmx grompp -f {npt_mdp} -c nvt.gro -r nvt.gro -p topol.top -o npt.tpr', # NPT 준비
+        f'gmx grompp -f {npt_mdp} -c nvt.gro -r nvt.gro -p topol.top -o npt.tpr -maxwarn 4', # NPT 준비
         f'gmx mdrun -v -deffnm npt', # NPT 실행
-        f'gmx grompp -f {mdp_file_path} -c npt.gro -t npt.cpt -p topol.top -o md_0_1.tpr', # MD 준비
+        f'gmx grompp -f {mdp_file_path} -c npt.gro -t npt.cpt -p topol.top -o md_0_1.tpr -maxwarn 3', # MD 준비
         f'gmx mdrun -v -deffnm md_0_1' # MD 실행
     ]
 
@@ -82,7 +82,7 @@ def main():
         md.print_rotating_bar()
 
     # 사용자 입력 및 추가 계산 실행
-    user_input = input("계산할 것을 선택하세요. (1: 에너지, 2: RMSD, 3: RMSF, 4: Gyrate) : ")
+    user_input = input("계산할 것을 선택하세요. (1: Energy, 2: RMSD, 3: RMSF, 4: Gyrate) : ")
     input_list = user_input.split()
 
     for option in input_list:

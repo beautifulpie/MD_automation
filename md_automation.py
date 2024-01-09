@@ -40,6 +40,9 @@ def cleanup_files():
     subprocess.run('rm *.top', shell=True, check=False)
     subprocess.run('rm #topol.top.2#', shell=True, check=False)
     subprocess.run('rm #topol.top.1#', shell=True, check=False)
+    subprocess.run('rm *.trr', shell=True, check=False)
+    subprocess.run('rm *.tpr', shell=True, check=False)
+    subprocess.run('rm *.log', shell=True, check=False)
     
 
 def print_rotating_bar(duration_seconds=3):
