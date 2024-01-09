@@ -1,0 +1,14 @@
+=========================
+MD Automation
+
+Made by Jung Youngwoo
+=========================
+Strucutre file path : 
+example.pdb
+
+Simulator parameter file path :
+example.mdp
+
+Itp file path:
+example_1.itp
+example_2.itp
