@@ -69,7 +69,7 @@ def main():
     commands = [
         f'gmx grompp -f {minimization_mdp} -c {input_molecule}_solv.gro -p topol.top -o em.tpr -maxwarn 3',    # 에너지 최적화 준비
         f'gmx mdrun -v -deffnm em',  # 에너지 최적화 실행
-        f'gmx grompp -f {nvt_mdp} -c em.gro -p topol.top -o nvt.tpr -maxwarn 4', # NVT 준비
+        f'gmx grompp -f {nvt_mdp} -c em.gro -r em.gro -p topol.top -o nvt.tpr -maxwarn 4', # NVT 준비
         f'gmx mdrun -v -deffnm nvt', # NVT 실행
         f'gmx grompp -f {npt_mdp} -c nvt.gro -r nvt.gro -p topol.top -o npt.tpr -maxwarn 4', # NPT 준비
         f'gmx mdrun -v -deffnm npt', # NPT 실행
