@@ -77,6 +77,8 @@ class MDGui(QMainWindow):
         self.label.setText("MD Automation is running... Please wait.")
         self.output_text.appendPlainText("====================================")
         self.output_text.appendPlainText('\033[1m' + "MD_automation" + '\0333')
+        self.output_text.appendPlainText("Maed by Jung Youngwoo")
+        self.output_text.appendPlainText("====================================")
 
         commands = [
             # ... (replace with your existing commands using self.selected_pdb_file and self.selected_mdp_file)
