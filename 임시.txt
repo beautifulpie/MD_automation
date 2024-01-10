@@ -4,12 +4,13 @@ MD_automation
 Made by Youngwoo Jung
 ====================================
 structure file name : 
- example
+ example.pdb
 
 Simulator parameter file name : 
- example 
- minim 
- nvt 
- npt
+ example.mdp 
+ minim.mdp 
+ nvt.mdp 
+ npt.mdp
 
 Itp file names : 
+posre.itp

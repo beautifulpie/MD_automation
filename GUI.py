@@ -1,6 +1,9 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QPushButton, QFileDialog, QPlainTextEdit, QWidget, QProgressBar
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QPushButton, QFileDialog, QPlainTextEdit, QWidget
 from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtCore import QThread, pyqtSignal
+import time
+
 import md_automation as md
 import subprocess
 import os
@@ -37,6 +40,8 @@ def generate_input_path(pdb_file, minim_mdp, npt_mdp, nvt_mdp, md_mdp, itp_files
         f.write(f"Simulator parameter file name : \n {md_mdp_name} \n {minim_mdp_name} \n {nvt_mdp_name} \n {npt_mdp_name}\n")
         f.write("\n")
         f.write("Itp file names : \n")
+        if itp_files_name == []:
+            f.write("posre.itp")
         for name in itp_files_name:
             f.write(f"{name}\n")
 
@@ -49,6 +54,18 @@ def generate_input_path(pdb_file, minim_mdp, npt_mdp, nvt_mdp, md_mdp, itp_files
     print(f'pdb_file_name : {pdb_file_name}')
     print(f'minim_mdp_name : {minim_mdp_name}')
 
+class RotatingBarThread(QThread):
+    rotation_updated = pyqtSignal(str)
+
+    def __init__(self):
+        super().__init__()
+
+    def run(self):
+        rotating_bar = '-'
+        while not self.isInterruptionRequested():
+            self.rotation_updated.emit(rotating_bar)
+            rotating_bar = rotating_bar[-1] + rotating_bar[:-1]  # Rotate the bar
+            self.msleep(100)  # Adjust the interval as needed
 
 
 class MDGui(QMainWindow):
@@ -82,10 +99,6 @@ class MDGui(QMainWindow):
         # ITP Files
         self.add_file_selection_button('Select ITP Files', self.get_itp_files)
 
-        # Progress Bar
-        self.progress_bar = QProgressBar(self)
-        self.layout.addWidget(self.progress_bar)
-
         # Output Text
         self.output_text = QPlainTextEdit(self)
         self.layout.addWidget(self.output_text)
@@ -103,10 +116,17 @@ class MDGui(QMainWindow):
         self.selected_nvt_mdp_file = ""
         self.selected_itp_files = []
 
-        # Timer for Progress Bar Update
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.update_progress)
-        self.progress_value = 0
+        # Rotating bar
+        self.rotating_label = QLabel(self)
+        self.rotating_label.setAlignment(Qt.AlignCenter)
+        self.rotating_label.setGeometry(10, 10, 580, 20)
+        self.rotating_thread = RotatingBarThread()
+        self.rotating_thread.rotation_updated.connect(self.updateRotatingLabel)
+        self.rotating_thread.start()
+
+    def updateRotatingLabel(self, rotating_bar):
+        self.rotating_label.setText(rotating_bar)
+
 
     def add_file_selection_button(self, button_text, click_function):
         button = QPushButton(button_text, self)
@@ -182,6 +202,19 @@ class MDGui(QMainWindow):
             self.output_text.appendPlainText(f"Selected nvt.mdp file: {self.selected_nvt_mdp_file}")
         print(f"Get nvt.mdp file : {self.selected_nvt_mdp_file}")
 
+    def startRotatingBar(self):
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.updateRotatingBar)
+        self.timer.start(100)  # Adjust the interval as needed
+
+    def updateRotatingBar(self):
+        # Update the rotating bar animation here
+        rotating_bar = '-'  # You can use a more sophisticated animation
+
+        current_text = self.output_text.toPlainText()
+        updated_text = current_text + rotating_bar
+
+        self.output_text.setPlainText(updated_text)
 
     def run_md_automation(self):
         inst = 0
@@ -212,16 +245,23 @@ class MDGui(QMainWindow):
         self.output_text.appendPlainText("Generate the input_path_file")
         generate_input_path(self.selected_pdb_file, self.selected_minim_mdp_file, self.selected_npt_mdp_file, self.selected_nvt_mdp_file, self.selected_md_mdp_file, self.selected_itp_files)
 
-        self.progress_bar.setRange(0, - 1)
-        self.progress_bar.setValue(0)
+        self.rotating_thread.requestInterruption()
+        self.rotating_thread.wait()
+
+        self.output_text.appendPlainText("====================================")
+        self.output_text.appendPlainText("Run the main.py")
+        self.rotating_thread.start()
 
         subprocess.run('python main.py', shell=True, check=True)
+        #time.sleep(5)
+
         print ("Run the main.py")
         print()
         print()
         # Display success message
         self.label.setText("MD Automation completed successfully!")
-        self.output_text.appendPlainText("Job Success!")
+        self.output_text.appendPlainText("====================================")
+        self.output_text.appendPlainText("Job Success!")    
 
     def update_progress(self):
         self.progress_bar.setValue(self.progress_value)
