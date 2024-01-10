@@ -83,7 +83,7 @@ class MDGui(QMainWindow):
 
         self.layout = QVBoxLayout(self.central_widget)
 
-        self.label = QLabel('MD Automation', self)
+        self.label = QLabel('MD Automation    -', self)
         self.label.setAlignment(Qt.AlignCenter)
         self.layout.addWidget(self.label)
 
@@ -252,8 +252,8 @@ class MDGui(QMainWindow):
         self.output_text.appendPlainText("Run the main.py")
         self.rotating_thread.start()
 
-        subprocess.run('python main.py', shell=True, check=True)
-        #time.sleep(5)
+        #subprocess.run('python main.py', shell=True, check=True)
+        time.sleep(5)
 
         print ("Run the main.py")
         print()
