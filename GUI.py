@@ -3,6 +3,53 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QPus
 from PyQt5.QtCore import Qt, QTimer
 import md_automation as md
 import subprocess
+import os
+
+def get_file_names_in_current_directory():
+    current_directory = os.getcwd()  # 현재 디렉토리 경로
+    files = [f for f in os.listdir(current_directory) if os.path.isfile(os.path.join(current_directory, f))]
+    return files
+
+def remove_path_from_file_names(file_names):
+    # 파일 이름에서 경로 제거
+    file_names_only = [os.path.splitext(os.path.basename(file))[0] for file in file_names]
+    return file_names_only
+
+def generate_input_path(pdb_file, minim_mdp, npt_mdp, nvt_mdp, md_mdp, itp_files):
+    # pdb 파일 이름
+    pdb_file_name = os.path.splitext(os.path.basename(pdb_file))[0]
+    # mdp 파일 이름
+    minim_mdp_name = os.path.splitext(os.path.basename(minim_mdp))[0]
+    npt_mdp_name = os.path.splitext(os.path.basename(npt_mdp))[0]
+    nvt_mdp_name = os.path.splitext(os.path.basename(nvt_mdp))[0]
+    md_mdp_name = os.path.splitext(os.path.basename(md_mdp))[0]
+    # itp 파일 이름
+    itp_files_name = remove_path_from_file_names(itp_files)
+    # input_path.txt 파일 생성
+    with open('임시.txt', 'w') as f:
+        f.write("====================================\n")
+        f.write("MD_automation\n")
+        f.write("\n")
+        f.write("Made by Youngwoo Jung\n")
+        f.write("====================================\n")
+        f.write(f"structure file name : \n {pdb_file_name}\n")
+        f.write("\n")
+        f.write(f"Simulator parameter file name : \n {md_mdp_name} \n {minim_mdp_name} \n {nvt_mdp_name} \n {npt_mdp_name}\n")
+        f.write("\n")
+        f.write("Itp file names : \n")
+        for name in itp_files_name:
+            f.write(f"{name}\n")
+
+    print(f"pdb_file_path : {pdb_file}")
+    print(f'minim_mdp_path : {minim_mdp}')
+    print(f'npt_mdp_path : {npt_mdp}')
+    print(f'nvt_mdp_path : {nvt_mdp}')
+    print(f'md_mdp_path : {md_mdp}')
+    print(f'itp_files_path : {itp_files}')
+    print(f'pdb_file_name : {pdb_file_name}')
+    print(f'minim_mdp_name : {minim_mdp_name}')
+
+
 
 class MDGui(QMainWindow):
     def __init__(self):
@@ -76,7 +123,7 @@ class MDGui(QMainWindow):
             self.selected_pdb_file = file_path
             self.output_text.appendPlainText(f"Selected PDB file: {self.selected_pdb_file}")
         
-        print("Get pdb file")
+        print(f"Get pdb file : {self.selected_pdb_file}")
 
     def get_itp_files(self):
         file_dialog = QFileDialog()
@@ -88,7 +135,7 @@ class MDGui(QMainWindow):
             self.selected_itp_files = file_paths
             self.output_text.appendPlainText(f"Selected ITP files: {', '.join(self.selected_itp_files)}")
         
-        print("Get itp files")
+        print(f"Get itp files: {self.selected_itp_files}")
 
     def get_md_mdp_file(self):
         file_dialog = QFileDialog()
@@ -100,7 +147,7 @@ class MDGui(QMainWindow):
             self.selected_md_mdp_file = file_path
             self.output_text.appendPlainText(f"Selected md.mdp file: {self.selected_md_mdp_file}")
         
-        print("Get md.mdp file")
+        print(f"Get md.mdp file :{self.selected_md_mdp_file}")
 
     def get_minim_mdp_file(self):
         file_dialog = QFileDialog()
@@ -111,7 +158,7 @@ class MDGui(QMainWindow):
         if file_path:
             self.selected_minim_mdp_file = file_path
             self.output_text.appendPlainText(f"Selected minim.mdp file: {self.selected_minim_mdp_file}")
-        print("Get minim.mdp file")
+        print(f"Get minim.mdp file {self.selected_minim_mdp_file}")
 
     def get_npt_mdp_file(self):
         file_dialog = QFileDialog()
@@ -122,7 +169,7 @@ class MDGui(QMainWindow):
         if file_path:
             self.selected_npt_mdp_file = file_path
             self.output_text.appendPlainText(f"Selected npt.mdp file: {self.selected_npt_mdp_file}")
-        print("Get npt.mdp file")
+        print(f"Get npt.mdp file : {self.selected_npt_mdp_file}")
 
     def get_nvt_mdp_file(self):
         file_dialog = QFileDialog()
@@ -133,7 +180,7 @@ class MDGui(QMainWindow):
         if file_path:
             self.selected_nvt_mdp_file = file_path
             self.output_text.appendPlainText(f"Selected nvt.mdp file: {self.selected_nvt_mdp_file}")
-        print("Get nvt.mdp file")
+        print(f"Get nvt.mdp file : {self.selected_nvt_mdp_file}")
 
 
     def run_md_automation(self):
@@ -162,29 +209,16 @@ class MDGui(QMainWindow):
         self.output_text.appendPlainText("MD_automation")
         self.output_text.appendPlainText("Maed by Jung Youngwoo")
         self.output_text.appendPlainText("====================================")
+        self.output_text.appendPlainText("Generate the input_path_file")
+        generate_input_path(self.selected_pdb_file, self.selected_minim_mdp_file, self.selected_npt_mdp_file, self.selected_nvt_mdp_file, self.selected_md_mdp_file, self.selected_itp_files)
 
-        commands = [
-            # Use self.selected_files to get the paths of the selected files
-            # Example: self.selected_files['.pdb'], self.selected_files['.mdp'], etc.
-        ]
-
-        total_commands = len(commands)
-        self.progress_bar.setRange(0, total_commands - 1)
+        self.progress_bar.setRange(0, - 1)
         self.progress_bar.setValue(0)
 
-        # Run the MD automation logic
-        for i, command in enumerate(commands):
-            self.output_text.appendPlainText(f"Running command: {command}")
-            try:
-                subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                self.output_text.appendPlainText("작업 완료")
-            except subprocess.CalledProcessError as e:
-                self.output_text.appendPlainText(f"Error: {e}")
-
-            # Update progress bar value
-            self.progress_value = i
-            self.timer.start(100)  # Start timer to update progress bar with a slight delay
-
+        subprocess.run('python main.py', shell=True, check=True)
+        print ("Run the main.py")
+        print()
+        print()
         # Display success message
         self.label.setText("MD Automation completed successfully!")
         self.output_text.appendPlainText("Job Success!")
