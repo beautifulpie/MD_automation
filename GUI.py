@@ -17,14 +17,14 @@ def remove_path_from_file_names(file_names):
 
 def generate_input_path(pdb_file, minim_mdp, npt_mdp, nvt_mdp, md_mdp, itp_files):
     # pdb 파일 이름
-    pdb_file_name = os.path.splitext(os.path.basename(pdb_file))[0]
+    pdb_file_name = os.path.splitext(os.path.basename(pdb_file))[0] + '.pdb'
     # mdp 파일 이름
-    minim_mdp_name = os.path.splitext(os.path.basename(minim_mdp))[0]
-    npt_mdp_name = os.path.splitext(os.path.basename(npt_mdp))[0]
-    nvt_mdp_name = os.path.splitext(os.path.basename(nvt_mdp))[0]
-    md_mdp_name = os.path.splitext(os.path.basename(md_mdp))[0]
+    minim_mdp_name = os.path.splitext(os.path.basename(minim_mdp))[0] + '.mdp'
+    npt_mdp_name = os.path.splitext(os.path.basename(npt_mdp))[0] + '.mdp'
+    nvt_mdp_name = os.path.splitext(os.path.basename(nvt_mdp))[0] + '.mdp'
+    md_mdp_name = os.path.splitext(os.path.basename(md_mdp))[0] + '.mdp'
     # itp 파일 이름
-    itp_files_name = remove_path_from_file_names(itp_files)
+    itp_files_name = remove_path_from_file_names(itp_files) 
     # input_path.txt 파일 생성
     with open('임시.txt', 'w') as f:
         f.write("====================================\n")
@@ -90,7 +90,7 @@ class MDGui(QMainWindow):
         self.output_text = QPlainTextEdit(self)
         self.layout.addWidget(self.output_text)
 
-        # Run Button
+        # Run Button    
         self.run_button = QPushButton('Run MD Automation', self)
         self.run_button.clicked.connect(self.run_md_automation)
         self.layout.addWidget(self.run_button)

@@ -1,8 +1,8 @@
 import tkinter as tk
-from tkinter import filedialog, scrolledtext
+from tkinter import ttk, filedialog, scrolledtext
 import os
 import subprocess
-from tkinter import ttk
+
 
 class MDGui(tk.Tk):
     def __init__(self):
@@ -18,6 +18,10 @@ class MDGui(tk.Tk):
 
         # Progress value
         self.progress_value = 0
+
+        # Set the theme
+        self.style = ttk.Style(self)
+        self.style.theme_use("clam")  # Change "clam" to your preferred theme
 
         # GUI setup
         self.title('MD Automation GUI')
@@ -40,11 +44,13 @@ class MDGui(tk.Tk):
         self.output_text = scrolledtext.ScrolledText(self, width=50, height=10, wrap=tk.WORD)
         self.output_text.pack(pady=10)
 
-        self.run_button = tk.Button(self, text='Run MD Automation', command=self.run_md_automation, font=('Helvetica', 12))
+        self.run_button = ttk.Button(self, text='Run MD Automation', command=self.run_md_automation)
         self.run_button.pack(pady=10)
 
+        self.style.configure('TButton', font=('Helvetica', 12))
+
     def create_file_selection_button(self, button_text, click_function):
-        button = tk.Button(self, text=button_text, command=click_function, font=('Helvetica', 10))
+        button = ttk.Button(self, text=button_text, command=click_function, style='TButton')
         button.pack(pady=5)
 
     def get_pdb_file(self):

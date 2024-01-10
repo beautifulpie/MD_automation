@@ -81,36 +81,7 @@ def main():
         md.run_gmx_command(command, "작업 완료")
         md.print_rotating_bar()
 
-    # 사용자 입력 및 추가 계산 실행
-    user_input = input("계산할 것을 선택하세요. (1: Energy, 2: RMSD, 3: RMSF, 4: Gyrate) : ")
-    input_list = user_input.split()
 
-    for option in input_list:
-        if option == '1':
-            command = f'gmx energy -f md_0_1.edr -o potential.xvg'
-            md.run_gmx_command(command, "에너지 계산 완료")
-            md.print_rotating_bar()
-            md.print_rotating_bar()
-            md.print_rotating_bar()
-
-        elif option == '2':
-            command = f'gmx rms -s md_0_1.tpr -f md_0_1.xtc -o rmsd.xvg'
-            md.run_gmx_command(command, "RMSD 계산")
-            md.print_rotating_bar()
-            md.print_rotating_bar()
-            md.print_rotating_bar()
-        elif option == '3':
-            command = f'gmx rmsf -s md_0_1.tpr -f md_0_1.xtc -o rmsf.xvg'
-            md.run_gmx_command(command, "RMSF 계산 완료")
-            md.print_rotating_bar()
-            md.print_rotating_bar()
-            md.print_rotating_bar()
-        elif option == '4':
-            command = f'gmx gyrate -s md_0_1.tpr -f md_0_1.xtc -o gyrate.xvg'
-            md.run_gmx_command(command, "Gyrate 계산 완료")
-            md.print_rotating_bar()
-            md.print_rotating_bar()
-            md.print_rotating_bar()
 
     md.cleanup_files()
     print("Job Success!")
