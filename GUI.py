@@ -76,7 +76,7 @@ class MDGui(QMainWindow):
 
     def initUI(self):
         self.setWindowTitle('MD Automation GUI')
-        self.setGeometry(100, 100, 800, 600)
+        self.setGeometry(100, 100, 880, 600)
 
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
@@ -86,6 +86,8 @@ class MDGui(QMainWindow):
         self.label = QLabel('MD Automation    -', self)
         self.label.setAlignment(Qt.AlignCenter)
         self.layout.addWidget(self.label)
+
+        
 
         # PDB File
         self.add_file_selection_button('Select PDB File', self.get_pdb_file)
@@ -103,6 +105,21 @@ class MDGui(QMainWindow):
         self.output_text = QPlainTextEdit(self)
         self.layout.addWidget(self.output_text)
 
+        ascii_art = """
+        ███████╗               ██████╗   ██████╗    ██████╗     ███████╗
+        ██╔════╝           ██╔════╝ ██╔═══██╗ ██╔══██╗ ██╔════╝
+        ███████╗           ██║                 ██║          ██║ ██████╔╝ █████╗  
+        ╚════██║           ██║                 ██║          ██║ ██╔══██╗ ██╔══╝  
+        ███████║██╗  ╚██████╗ ╚██████╔╝ ██║      ██║ ███████╗
+        ╚══════╝╚═╝     ╚═════╝    ╚═════╝     ╚═╝      ╚═╝ ╚══════╝
+        """
+
+        self.output_text.appendPlainText("==============================================================================================")
+        self.output_text.appendPlainText("                                                                   MD_automation")
+        self.output_text.appendPlainText("                          Made by Jung Youngwoo")
+        self.output_text.appendPlainText("==============================================================================================")
+        self.output_text.appendPlainText(ascii_art)
+        self.output_text.appendPlainText("==============================================================================================")
         # Run Button    
         self.run_button = QPushButton('Run MD Automation', self)
         self.run_button.clicked.connect(self.run_md_automation)
@@ -238,9 +255,6 @@ class MDGui(QMainWindow):
 
         # Run MD automation with the selected files
         self.label.setText("MD Automation is running... Please wait.")
-        self.output_text.appendPlainText("====================================")
-        self.output_text.appendPlainText("MD_automation")
-        self.output_text.appendPlainText("Maed by Jung Youngwoo")
         self.output_text.appendPlainText("====================================")
         self.output_text.appendPlainText("Generate the input_path_file")
         generate_input_path(self.selected_pdb_file, self.selected_minim_mdp_file, self.selected_npt_mdp_file, self.selected_nvt_mdp_file, self.selected_md_mdp_file, self.selected_itp_files)
