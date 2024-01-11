@@ -2,7 +2,6 @@ import subprocess
 import time
 import md_automation as md
 
-
 def main():
     file_path = './input_file_path.txt'
     lines = md.read_lines_from_file(file_path)
@@ -22,11 +21,11 @@ def main():
     print("Final update : 2024.01.09")
     print("====================================")
 
-    print(f"Load pdb file : {pdb_file_path}")
-    print(f"Load mdp file : {mdp_file_path}")
-    print(f"Load minimization mdp file : {minimization_mdp}")
-    print(f"Load nvt mdp file : {nvt_mdp}")
-    print(f"Load npt mdp file : {npt_mdp}")
+    print(f"Load pdb file : {pdb_file_path}.pdb")
+    print(f"Load mdp file : {mdp_file_path}.mdp")
+    print(f"Load minimization mdp file : {minimization_mdp}.mdp")
+    print(f"Load nvt mdp file : {nvt_mdp}.mdp")
+    print(f"Load npt mdp file : {npt_mdp}.mdp")
 
     print("====================================")
 
@@ -81,8 +80,6 @@ def main():
     for command in commands:
         md.run_gmx_command(command, "작업 완료")
         md.print_rotating_bar()
-
-
 
     md.cleanup_files()
     print("Job Success!")

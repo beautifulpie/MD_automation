@@ -12,7 +12,6 @@ import platform
 
 current_os = platform.system()
 
-
 f = Figlet(font='slant')
 
 def get_file_names_in_current_directory():
@@ -44,7 +43,7 @@ def generate_input_path(pdb_file, minim_mdp, npt_mdp, nvt_mdp, md_mdp, itp_files
         f.write("====================================\n")
         f.write(f"structure file name : \n {pdb_file_name}\n")
         f.write("\n")
-        f.write(f"Simulator parameter file name : \n {md_mdp_name} \n {minim_mdp_name} \n {nvt_mdp_name} \n {npt_mdp_name}\n")
+        f.write(f"Simulator parameter file name : \n {md_mdp_name}\n {minim_mdp_name}\n {nvt_mdp_name}\n {npt_mdp_name}\n")
         f.write("\n")
         f.write("Itp file names : \n")
         if itp_files_name == []:
@@ -57,23 +56,9 @@ def generate_input_path(pdb_file, minim_mdp, npt_mdp, nvt_mdp, md_mdp, itp_files
     print(f'npt_mdp_path : {npt_mdp}')
     print(f'nvt_mdp_path : {nvt_mdp}')
     print(f'md_mdp_path : {md_mdp}')
-    print(f'itp_files_path : {itp_files}')
     print(f'pdb_file_name : {pdb_file_name}')
     print(f'minim_mdp_name : {minim_mdp_name}')
-
-class RotatingBarThread(QThread):
-    rotation_updated = pyqtSignal(str)
-
-    def __init__(self):
-        super().__init__()
-
-    def run(self):
-        rotating_bar = '-'
-        while not self.isInterruptionRequested():
-            self.rotation_updated.emit(rotating_bar)
-            rotating_bar = rotating_bar[-1] + rotating_bar[:-1]  # Rotate the bar
-            self.msleep(100)  # Adjust the interval as needed
-
+    print(f'itp_files_path : {itp_files}')
 
 class MDGui(QMainWindow):
     def __init__(self):
@@ -90,11 +75,9 @@ class MDGui(QMainWindow):
 
         self.layout = QVBoxLayout(self.central_widget)
 
-        self.label = QLabel('MD Automation    -', self)
+        self.label = QLabel('MD Automation', self)
         self.label.setAlignment(Qt.AlignCenter)
         self.layout.addWidget(self.label)
-
-        
 
         # PDB File
         self.add_file_selection_button('Select PDB File', self.get_pdb_file)
@@ -114,7 +97,7 @@ class MDGui(QMainWindow):
         
         self.output_text.appendPlainText("MD_automation")
         self.output_text.appendPlainText("Made by Jung Youngwoo")
-        self.output_text.appendPlainText("Final update : 2021.01.11")
+        self.output_text.appendPlainText("Final update : 2024.01.11")
         
         print("==============================================================================================")
         print(f.renderText('Spider Core MD Automation'))
@@ -132,18 +115,6 @@ class MDGui(QMainWindow):
         self.selected_npt_mdp_file = ""
         self.selected_nvt_mdp_file = ""
         self.selected_itp_files = []
-
-        # Rotating bar
-        self.rotating_label = QLabel(self)
-        self.rotating_label.setAlignment(Qt.AlignCenter)
-        self.rotating_label.setGeometry(10, 10, 580, 20)
-        self.rotating_thread = RotatingBarThread()
-        self.rotating_thread.rotation_updated.connect(self.updateRotatingLabel)
-        self.rotating_thread.start()
-
-    def updateRotatingLabel(self, rotating_bar):
-        self.rotating_label.setText(rotating_bar)
-
 
     def add_file_selection_button(self, button_text, click_function):
         button = QPushButton(button_text, self)
@@ -219,20 +190,6 @@ class MDGui(QMainWindow):
             self.output_text.appendPlainText(f"Selected nvt.mdp file: {self.selected_nvt_mdp_file}")
         print(f"Get nvt.mdp file : {self.selected_nvt_mdp_file}")
 
-    def startRotatingBar(self):
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.updateRotatingBar)
-        self.timer.start(100)  # Adjust the interval as needed
-
-    def updateRotatingBar(self):
-        # Update the rotating bar animation here
-        rotating_bar = '-'  # You can use a more sophisticated animation
-
-        current_text = self.output_text.toPlainText()
-        updated_text = current_text + rotating_bar
-
-        self.output_text.setPlainText(updated_text)
-
     def run_md_automation(self):
         inst = 0
         if not self.selected_pdb_file :
@@ -259,20 +216,14 @@ class MDGui(QMainWindow):
         self.output_text.appendPlainText("Generate the input_path_file")
         generate_input_path(self.selected_pdb_file, self.selected_minim_mdp_file, self.selected_npt_mdp_file, self.selected_nvt_mdp_file, self.selected_md_mdp_file, self.selected_itp_files)
 
-        self.rotating_thread.requestInterruption()
-        self.rotating_thread.wait()
-
         self.output_text.appendPlainText("====================================")
         self.output_text.appendPlainText("Run the main.py")
-        self.rotating_thread.start()
 
         if current_os == 'Linux':
             subprocess.run('python main.py', shell=True, check=True)
             time.sleep(0.5)
+            print ("Run the main.py")
 
-        print ("Run the main.py")
-        print()
-        print()
         # Display success message
         self.label.setText("MD Automation completed successfully!")
         self.output_text.appendPlainText("====================================")
