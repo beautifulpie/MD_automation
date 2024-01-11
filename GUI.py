@@ -211,13 +211,18 @@ class MDGui(QMainWindow):
             return
 
         # Run MD automation with the selected files
+        
         self.label.setText("MD Automation is running... Please wait.")
+        
         self.output_text.appendPlainText("====================================")
+        self.output_text.repaint()
         self.output_text.appendPlainText("Generate the input_path_file")
         generate_input_path(self.selected_pdb_file, self.selected_minim_mdp_file, self.selected_npt_mdp_file, self.selected_nvt_mdp_file, self.selected_md_mdp_file, self.selected_itp_files)
-
+        self.output_text.repaint()
         self.output_text.appendPlainText("====================================")
+        self.output_text.repaint()
         self.output_text.appendPlainText("Run the main.py")
+        self.output_text.repaint()
 
         if current_os == 'Linux':
             subprocess.run('python main.py', shell=True, check=True)
