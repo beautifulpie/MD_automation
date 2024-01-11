@@ -2,6 +2,7 @@ import subprocess
 import time
 import md_automation as md
 
+
 def main():
     file_path = './input_file_path.txt'
     lines = md.read_lines_from_file(file_path)

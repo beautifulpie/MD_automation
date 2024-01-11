@@ -7,6 +7,13 @@ import time
 import md_automation as md
 import subprocess
 import os
+from pyfiglet import Figlet
+import platform
+
+current_os = platform.system()
+
+
+f = Figlet(font='slant')
 
 def get_file_names_in_current_directory():
     current_directory = os.getcwd()  # 현재 디렉토리 경로
@@ -104,22 +111,15 @@ class MDGui(QMainWindow):
         # Output Text
         self.output_text = QPlainTextEdit(self)
         self.layout.addWidget(self.output_text)
-
-        ascii_art = """
-        ███████╗               ██████╗   ██████╗    ██████╗     ███████╗
-        ██╔════╝           ██╔════╝ ██╔═══██╗ ██╔══██╗ ██╔════╝
-        ███████╗           ██║                 ██║          ██║ ██████╔╝ █████╗  
-        ╚════██║           ██║                 ██║          ██║ ██╔══██╗ ██╔══╝  
-        ███████║██╗  ╚██████╗ ╚██████╔╝ ██║      ██║ ███████╗
-        ╚══════╝╚═╝     ╚═════╝    ╚═════╝     ╚═╝      ╚═╝ ╚══════╝
-        """
-
-        self.output_text.appendPlainText("==============================================================================================")
-        self.output_text.appendPlainText("                                                                   MD_automation")
-        self.output_text.appendPlainText("                          Made by Jung Youngwoo")
-        self.output_text.appendPlainText("==============================================================================================")
-        self.output_text.appendPlainText(ascii_art)
-        self.output_text.appendPlainText("==============================================================================================")
+        
+        self.output_text.appendPlainText("MD_automation")
+        self.output_text.appendPlainText("Made by Jung Youngwoo")
+        self.output_text.appendPlainText("Final update : 2021.01.11")
+        
+        print("==============================================================================================")
+        print(f.renderText('Spider Core MD Automation'))
+        print(f.renderText('Made by J.YW'))
+        print("==============================================================================================")
         # Run Button    
         self.run_button = QPushButton('Run MD Automation', self)
         self.run_button.clicked.connect(self.run_md_automation)
@@ -266,8 +266,9 @@ class MDGui(QMainWindow):
         self.output_text.appendPlainText("Run the main.py")
         self.rotating_thread.start()
 
-        #subprocess.run('python main.py', shell=True, check=True)
-        time.sleep(5)
+        if current_os == 'Linux':
+            subprocess.run('python main.py', shell=True, check=True)
+            time.sleep(0.5)
 
         print ("Run the main.py")
         print()
