@@ -82,6 +82,10 @@ def update_top_file(top_file_path, molecule_data):
         print(f"오류 발생: {e}")
 
 
+def check_gmx_file(avail_file):
+    try 
+
+
 def additional_job():
         # 사용자 입력 및 추가 계산 실행
     user_input = input("계산할 것을 선택하세요. (1: Energy, 2: RMSD, 3: RMSF, 4: Gyrate) : ")

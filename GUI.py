@@ -35,7 +35,7 @@ def generate_input_path(pdb_file, minim_mdp, npt_mdp, nvt_mdp, md_mdp, itp_files
     # itp 파일 이름
     itp_files_name = remove_path_from_file_names(itp_files) 
     # input_path.txt 파일 생성
-    with open('임시.txt', 'w') as f:
+    with open('input_file_path.txt', 'w') as f:
         f.write("====================================\n")
         f.write("MD_automation\n")
         f.write("\n")
