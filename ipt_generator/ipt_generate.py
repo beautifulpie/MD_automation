@@ -51,10 +51,10 @@ def add_unit(current_unit, add_unit ):
 
     #Bonds
     for i in range(len(current_unit['bonds'])-1):
-        out_put_Bonds.append(current_unit[i])
+        out_put_Bonds.append(current_unit["bonds"][i])
     
     for j in range(len(add_unit['bonds'])):
-        add_unit[j][1] = int(add_unit[j][1]) + len(current_unit) - 1
+        add_unit[j][1] = int(add_unit['bonds'][j][1])
         out_put_Bonds.append(add_unit[j])
 
     #Angles

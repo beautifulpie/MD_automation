@@ -49,7 +49,7 @@ def generate_input_path(pdb_file, minim_mdp, npt_mdp, nvt_mdp, md_mdp, itp_files
         if itp_files_name == []:
             f.write("posre.itp")
         for name in itp_files_name:
-            f.write(f"{name}\n")
+            f.write(f"{name}.itp\n")
 
     print(f"pdb_file_path : {pdb_file}")
     print(f'minim_mdp_path : {minim_mdp}')

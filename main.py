@@ -64,16 +64,16 @@ def main():
         'Protein_A': 1,
         'SOL': 10832
     }
-    md.update_top_file('./' + top_file_path, molecule_data)
+    md.update_top_file(top_file_path, itp_files_name)
 
     commands = [
-        f'gmx grompp -f {minimization_mdp} -c {input_molecule}_solv.gro -p topol.top -o em.tpr -maxwarn 3',    # 에너지 최적화 준비
+        f'gmx grompp -f {minimization_mdp} -c {input_molecule}_solv.gro -p topol.top -o em.tpr -maxwarn 10',    # 에너지 최적화 준비
         f'gmx mdrun -v -deffnm em',  # 에너지 최적화 실행
-        f'gmx grompp -f {nvt_mdp} -c em.gro -r em.gro -p topol.top -o nvt.tpr -maxwarn 4', # NVT 준비
+        f'gmx grompp -f {nvt_mdp} -c em.gro -r em.gro -p topol.top -o nvt.tpr -maxwarn 10', # NVT 준비
         f'gmx mdrun -v -deffnm nvt', # NVT 실행
-        f'gmx grompp -f {npt_mdp} -c nvt.gro -r nvt.gro -p topol.top -o npt.tpr -maxwarn 4', # NPT 준비
+        f'gmx grompp -f {npt_mdp} -c nvt.gro -r nvt.gro -p topol.top -o npt.tpr -maxwarn 10', # NPT 준비
         f'gmx mdrun -v -deffnm npt', # NPT 실행
-        f'gmx grompp -f {mdp_file_path} -c npt.gro -t npt.cpt -p topol.top -o md_0_1.tpr -maxwarn 3', # MD 준비
+        f'gmx grompp -f {mdp_file_path} -c npt.gro -t npt.cpt -p topol.top -o md_0_1.tpr -maxwarn 10', # MD 준비
         f'gmx mdrun -v -deffnm md_0_1' # MD 실행
     ]
 

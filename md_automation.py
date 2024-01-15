@@ -60,19 +60,31 @@ def print_rotating_bar(duration_seconds=3):
 
 
 
-def update_top_file(top_file_path, molecule_data):
+def update_top_file(top_file_path, itp_files_name):
     try:
         # top 파일 읽기
         with open(top_file_path, 'r') as f:
             lines = f.readlines()
 
         # [ molecules ] 섹션 찾기
-        molecules_start = lines.index('[ molecules ]\n')
-        molecules_end = lines.index('\n', molecules_start)
+        molecules_start = lines.index('[ moleculetype ]\n')
+        txt_end = len(lines)
+
+        print(f"txt_end :{txt_end}")
+
+        for j in range(len(itp_files_name)):
+            lines.append('#')
+
+        print(f"len(itp_files_name) :{len(itp_files_name)}")
+        print(len(lines))
+
+        for k in range( txt_end - molecules_start  ):
+            lines[ txt_end + len(itp_files_name) - k -1 ] = lines[ txt_end - k - 1 ]
 
         # [ molecules ] 섹션 업데이트
-        lines[molecules_start + 1:molecules_end] = [f'{molecule} {count}\n' for molecule, count in molecule_data.items()]
-
+        for i in range(len(itp_files_name)):
+            lines[molecules_start - i ] ="#include " +  '\"' + itp_files_name[i] + '\"\n'
+            print("#include " +  '\"' + itp_files_name[i] + '\"\n')
         # top 파일 쓰기
         with open(top_file_path, 'w') as f:
             f.writelines(lines)
@@ -83,7 +95,8 @@ def update_top_file(top_file_path, molecule_data):
 
 
 def check_gmx_file(avail_file):
-    try 
+    #try
+    return True
 
 
 def additional_job():
