@@ -54,7 +54,7 @@ def generate_input_path(pdb_file, minim_mdp, npt_mdp, nvt_mdp, md_mdp, itp_files
     print(f"pdb_file_path : {pdb_file}")
     print(f'minim_mdp_path : {minim_mdp}')
     print(f'npt_mdp_path : {npt_mdp}')
-    print(f'nvt_mdp_path : {nvt_mdp}')
+    print(f'nvt_mdp_path : {nvt_mdp}') 
     print(f'md_mdp_path : {md_mdp}')
     print(f'pdb_file_name : {pdb_file_name}')
     print(f'minim_mdp_name : {minim_mdp_name}')
@@ -166,7 +166,7 @@ class MDGui(QMainWindow):
         if file_path:
             self.selected_minim_mdp_file = file_path
             self.output_text.appendPlainText(f"Selected minim.mdp file: {self.selected_minim_mdp_file}")
-        print(f"Get minim.mdp file {self.selected_minim_mdp_file}")
+        print(f"Get minim.mdp file {self.selected_minim_mgdp_file}")
 
     def get_npt_mdp_file(self):
         file_dialog = QFileDialog()
