@@ -58,8 +58,6 @@ def print_rotating_bar(duration_seconds=3):
     sys.stdout.write('\r')  # Clear the line
     sys.stdout.flush()
 
-
-
 def update_top_file(top_file_path, itp_files_name):
     try:
         # top 파일 읽기
