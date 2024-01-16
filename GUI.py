@@ -140,8 +140,8 @@ class MDGui(QMainWindow):
         file_paths, _ = file_dialog.getOpenFileNames(self, "Select ITP Files", "", "ITP Files (*.itp);;All Files (*)")
 
         if file_paths:
-            self.selected_itp_files = file_paths
-            self.output_text.appendPlainText(f"Selected ITP files: {', '.join(self.selected_itp_files)}")
+            self.selected_itp_files.append(file_paths)
+            self.output_text.appendPlainText(f"Selected ITP files: {self.selected_itp_files}")
         
         print(f"Get itp files: {self.selected_itp_files}")
 
