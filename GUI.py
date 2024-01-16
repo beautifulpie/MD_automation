@@ -166,7 +166,7 @@ class MDGui(QMainWindow):
         if file_path:
             self.selected_minim_mdp_file = file_path
             self.output_text.appendPlainText(f"Selected minim.mdp file: {self.selected_minim_mdp_file}")
-        print(f"Get minim.mdp file {self.selected_minim_mgdp_file}")
+        print(f"Get minim.mdp file {self.selected_minim_mdp_file}")
 
     def get_npt_mdp_file(self):
         file_dialog = QFileDialog()
