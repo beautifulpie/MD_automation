@@ -40,18 +40,16 @@ def add_unit(current_unit, add_unit ):
     output_Bonds = []
     output_Angles = []
     output_Dihedrals = []
-
+    length_of_current = int(current_unit['atoms'][-1][0])
     #Atoms 
-    for i in range(len(current_unit['atoms'])-1):
+    for i in range(length_of_current-1):
         output_Atoms.append(current_unit['atoms'][i])
     
-    print("\n \n ")
-    length_of_current = current_unit['atoms'][-1][0]
-
-    for add_atom in add_unit['atoms']:
-        add_atom[0] = str(int(add_atom[0]) + int(length_of_current) - 1)
-        print(add_atom)
-        output_Atoms.append(add_atom)
+    for j in range(int(add_unit['atoms'][-1][0])):
+        inst = []
+        inst.append(add_unit['atoms'][j])
+        #inst[0][0] = str(int(inst[0][0]) + length_of_current - 1)
+        output_Atoms.append([int(inst[0][0])+ length_of_current - 1, inst[0][1], int(inst[0][2]), inst[0][3], inst[0][4], int(inst[0][5]) + length_of_current - 1, float(inst[0][6]), float(inst[0][7])])
         
     #Bonds
     for i in range(len(current_unit['bonds'])-1):
