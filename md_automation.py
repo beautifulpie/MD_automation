@@ -14,9 +14,10 @@ def read_lines_from_file(file_path):
 
 def extract_itp_files_names(itp_files):
     itp_files_name = []
+    output = []
     for itp_file in itp_files:
         itp_files_name.append(itp_file.split('/')[-1].strip())
-    return itp_files_name
+    return output
 
 
 def run_gmx_command(command, message):
@@ -103,26 +104,17 @@ def additional_job():
     for option in input_list:
         if option == '1':
             command = f'gmx energy -f md_0_1.edr -o potential.xvg'
-            md.run_gmx_command(command, "에너지 계산 완료")
-            md.print_rotating_bar()
-            md.print_rotating_bar()
-            md.print_rotating_bar()
-
+            run_gmx_command(command, "에너지 계산 완료")
+            
         elif option == '2':
             command = f'gmx rms -s md_0_1.tpr -f md_0_1.xtc -o rmsd.xvg'
-            md.run_gmx_command(command, "RMSD 계산")
-            md.print_rotating_bar()
-            md.print_rotating_bar()
-            md.print_rotating_bar()
+            run_gmx_command(command, "RMSD 계산")
+            
         elif option == '3':
             command = f'gmx rmsf -s md_0_1.tpr -f md_0_1.xtc -o rmsf.xvg'
-            md.run_gmx_command(command, "RMSF 계산 완료")
-            md.print_rotating_bar()
-            md.print_rotating_bar()
-            md.print_rotating_bar()
+            run_gmx_command(command, "RMSF 계산 완료")
+            
         elif option == '4':
             command = f'gmx gyrate -s md_0_1.tpr -f md_0_1.xtc -o gyrate.xvg'
-            md.run_gmx_command(command, "Gyrate 계산 완료")
-            md.print_rotating_bar()
-            md.print_rotating_bar()
-            md.print_rotating_bar()
+            run_gmx_command(command, "Gyrate 계산 완료")
+            

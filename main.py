@@ -21,11 +21,11 @@ def main():
     print("Final update : 2024.01.09")
     print("====================================")
 
-    print(f"Load pdb file : {pdb_file_path}.pdb")
-    print(f"Load mdp file : {mdp_file_path}.mdp")
-    print(f"Load minimization mdp file : {minimization_mdp}.mdp")
-    print(f"Load nvt mdp file : {nvt_mdp}.mdp")
-    print(f"Load npt mdp file : {npt_mdp}.mdp")
+    print(f"Load pdb file : {pdb_file_path}")
+    print(f"Load mdp file : {mdp_file_path}")
+    print(f"Load minimization mdp file : {minimization_mdp}")
+    print(f"Load nvt mdp file : {nvt_mdp}")
+    print(f"Load npt mdp file : {npt_mdp}")
 
     print("====================================")
 
@@ -33,17 +33,14 @@ def main():
     print(f"input_molecule : {input_molecule}")
 
     # pdb2gmx 실행
-    pdb2gmx_command = f'gmx pdb2gmx -f {input_molecule}.pdb -o {input_molecule}_processed.gro -water spce -p topol.top'
+    pdb2gmx_command = f'gmx pdb2gmx -f {input_molecule}.pdb -o {input_molecule}_processed.gro -water spce -p topol.top -ignh'
     subprocess.run(pdb2gmx_command, shell=True, check=True)
     print("pdb2gmx 완료")
     
-    with open(top_file_path, 'r', encoding='utf-8') as top_file:
-        top_content = top_file.read()
-
-    itp_files_section = '\n'.join(itp_files_name)
-
+    md.update_top_file(top_file_path, itp_files_name)
+    
     commands = [
-        f'gmx editconf -f {input_molecule}_processed.gro -o {input_molecule}_newbox.gro -c -d 1.0 -bt cubic', # 박스 생성
+        f'gmx editconf -f { input_molecule}_processed.gro -o {input_molecule}_newbox.gro -c -d 1.0 -bt cubic', # 박스 생성
         f'gmx solvate -cp {input_molecule}_newbox.gro -cs spc216.gro -o {input_molecule}_solv.gro -p topol.top', # 수분 분자 추가
     ]
     for command in commands:
@@ -64,7 +61,7 @@ def main():
         'Protein_A': 1,
         'SOL': 10832
     }
-    md.update_top_file(top_file_path, itp_files_name)
+    
 
     commands = [
         f'gmx grompp -f {minimization_mdp} -c {input_molecule}_solv.gro -p topol.top -o em.tpr -maxwarn 10',    # 에너지 최적화 준비

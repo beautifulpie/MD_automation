@@ -33,7 +33,12 @@ def generate_input_path(pdb_file, minim_mdp, npt_mdp, nvt_mdp, md_mdp, itp_files
     nvt_mdp_name = os.path.splitext(os.path.basename(nvt_mdp))[0] + '.mdp'
     md_mdp_name = os.path.splitext(os.path.basename(md_mdp))[0] + '.mdp'
     # itp 파일 이름
-    itp_files_name = remove_path_from_file_names(itp_files) 
+    itp_files_name = []
+    for i in range(len(itp_files)):
+        itp_files_name.append(os.path.splitext(os.path.basename(itp_files[i][0]))[0])
+    #itp_files_name = remove_path_from_file_names(itp_files) 
+    print(itp_files_name)
+    
     # input_path.txt 파일 생성
     with open('input_file_path.txt', 'w') as f:
         f.write("====================================\n")
@@ -139,6 +144,7 @@ class MDGui(QMainWindow):
         file_dialog.setDefaultSuffix("itp")
         file_paths, _ = file_dialog.getOpenFileNames(self, "Select ITP Files", "", "ITP Files (*.itp);;All Files (*)")
 
+        
         if file_paths:
             self.selected_itp_files.append(file_paths)
             self.output_text.appendPlainText(f"Selected ITP files: {self.selected_itp_files}")
