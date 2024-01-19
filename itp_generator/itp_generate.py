@@ -96,6 +96,7 @@ def add_unit(current_unit, add_unit ):
 
     #Dihedrals
     for i in range(len(current_unit['dihedrals'])):
+        # 이 부분 수정할 것
         output_Dihedrals.append(current_unit['dihedrals'][i])
 
     return output_Atoms, output_Bonds, output_Angles, output_Dihedrals
