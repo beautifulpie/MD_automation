@@ -38,11 +38,13 @@ def main():
     print("pdb2gmx 완료")
     
     md.update_top_file(top_file_path, itp_files_name)
-    
+    box_diameter = input("박스 크기를 입력하세요 (nm, 기본 1.0) : ")
+
     commands = [
-        f'gmx editconf -f { input_molecule}_processed.gro -o {input_molecule}_newbox.gro -c -d 1.0 -bt cubic', # 박스 생성
+        f'gmx editconf -f { input_molecule}_processed.gro -o {input_molecule}_newbox.gro -c -d {box_diameter} -bt cubic', # 박스 생성
         f'gmx solvate -cp {input_molecule}_newbox.gro -cs spc216.gro -o {input_molecule}_solv.gro -p topol.top', # 수분 분자 추가
     ]
+
     for command in commands:
         md.run_gmx_command(command, "작업 완료")
         md.print_rotating_bar()
@@ -62,15 +64,20 @@ def main():
         'SOL': 10832
     }
     
-
     commands = [
         f'gmx grompp -f {minimization_mdp} -c {input_molecule}_solv.gro -p topol.top -o em.tpr -maxwarn 10 -r {input_molecule}_solv.gro',    # 에너지 최적화 준비
         f'gmx mdrun -v -deffnm em',  # 에너지 최적화 실행
-        f'gmx grompp -f {nvt_mdp} -c em.gro -r em.gro -p topol.top -o nvt.tpr -maxwarn 10 ', # NVT 준비
+        f'gmx make_ndx -f {input_molecule}_solv.gro -o {input_molecule}_solv.ndx',
+        f'q',
+        f'gmx grompp -f {nvt_mdp} -c em.gro -r em.gro -p topol.top -o nvt.tpr -maxwarn 10 -n {input_molecule}_solv.ndx', # NVT 준비
         f'gmx mdrun -v -deffnm nvt', # NVT 실행
-        f'gmx grompp -f {npt_mdp} -c nvt.gro -r nvt.gro -p topol.top -o npt.tpr -maxwarn 10', # NPT 준비
+        f'gmx make_ndx -f nvt.gro -o nvt.ndx',
+        f'q',
+        f'gmx grompp -f {npt_mdp} -c nvt.gro -r nvt.gro -p topol.top -o npt.tpr -maxwarn 10 -n nvt.ndx', # NPT 준비
         f'gmx mdrun -v -deffnm npt', # NPT 실행
-        f'gmx grompp -f {mdp_file_path} -c npt.gro -t npt.cpt -p topol.top -o md_0_1.tpr -maxwarn 10', # MD 준비
+        f'gmx make_ndx -f npt.gro -o npt.ndx',
+        f'q',
+        f'gmx grompp -f {mdp_file_path} -c npt.gro -t npt.cpt -p topol.top -o md_0_1.tpr -maxwarn 10 -n npt.ndx', # MD 준비
         f'gmx mdrun -v -deffnm md_0_1' # MD 실행
     ]
 
