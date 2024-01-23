@@ -1,7 +1,8 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QPushButton, QFileDialog, QPlainTextEdit, QWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QPushButton, QFileDialog, QPlainTextEdit, QWidget, QInputDialog, QLineEdit
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5 import QtGui
 import time
 
 import md_automation as md
@@ -86,15 +87,19 @@ class MDGui(QMainWindow):
 
         # PDB File
         self.add_file_selection_button('Select PDB File', self.get_pdb_file)
+        
 
         # MDP Files
         self.add_file_selection_button('Select md.mdp', self.get_md_mdp_file)
         self.add_file_selection_button('Select minim.mdp', self.get_minim_mdp_file)
         self.add_file_selection_button('Select npt.mdp', self.get_npt_mdp_file)
         self.add_file_selection_button('Select nvt.mdp', self.get_nvt_mdp_file)
-
+        
         # ITP Files
         self.add_file_selection_button('Select ITP Files', self.get_itp_files)
+
+        # number of steps
+        self.add_number_input_button('Select nsteps', self.get_number_input)
 
         # Output Text
         self.output_text = QPlainTextEdit(self)
@@ -120,11 +125,32 @@ class MDGui(QMainWindow):
         self.selected_npt_mdp_file = ""
         self.selected_nvt_mdp_file = ""
         self.selected_itp_files = []
+        self.number_of_steps = 500000
+
+    def add_number_input_button(self, button_text, click_function):
+        button = QPushButton(button_text, self)
+        button.clicked.connect(lambda: self.get_number_input(click_function))
+
+        self.layout.addWidget(button)
 
     def add_file_selection_button(self, button_text, click_function):
         button = QPushButton(button_text, self)
         button.clicked.connect(click_function)
         self.layout.addWidget(button)
+
+    def get_number_input(self, click_function):
+        input_text, ok = QInputDialog.getText(self, "nStep", "How many step :", QLineEdit.Normal, "")
+
+        if ok and input_text.strip():
+            try:
+                if int(input_text) <= 0:
+                    print("Please enter a positive integer.")
+                    return
+                number_of_steps = int(input_text)
+                self.output_text.appendPlainText(f"nstep : {number_of_steps}")
+
+            except ValueError:
+                self.output_text.appendPlainText("Please enter a valid integer.")
 
     def get_pdb_file(self):
         file_dialog = QFileDialog()
