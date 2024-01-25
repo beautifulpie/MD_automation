@@ -3,11 +3,6 @@ import time
 import sys
 from datetime import datetime
 
-def print_save_timestamp():
-    save_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(f"Code saved at: {save_timestamp}")
-
-
 def read_lines_from_file(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         return file.readlines()
@@ -18,7 +13,6 @@ def extract_itp_files_names(itp_files):
     for itp_file in itp_files:
         itp_files_name.append(itp_file.split('/')[-1].strip())
     return output
-
 
 def run_gmx_command(command, message):
     print(f"Command : {command}")
@@ -42,7 +36,6 @@ def cleanup_files():
     subprocess.run('rm *.trr', shell=True, check=False)
     subprocess.run('rm *.tpr', shell=True, check=False)
     subprocess.run('rm *.log', shell=True, check=False)
-    
 
 def print_rotating_bar(duration_seconds=3):
     rotation_symbols = ['\\', '|', '/', '-']
@@ -89,12 +82,6 @@ def update_top_file(top_file_path, itp_files_name):
         print("topol.top 파일 업데이트 완료")
     except Exception as e:
         print(f"오류 발생: {e}")
-
-
-def check_gmx_file(avail_file):
-    #try
-    return True
-
 
 def additional_job():
         # 사용자 입력 및 추가 계산 실행
@@ -183,7 +170,6 @@ def generate_mdp_file(job_name = 'Molecular_dynamics', minim_step = 50000, nvt_s
             f.write("gen_temp = 300 ; generate initial velocities for 300 K \n")
             f.write("gen_seed = -1 ; generate a random seed \n")
 
-
         with open('npt.mdp', 'w') as f:
             f.write("; Made by Youngwoo Jung\n")
             f.write(f'title                   = {job_name} NPT ensemble \n')
@@ -230,8 +216,6 @@ def generate_mdp_file(job_name = 'Molecular_dynamics', minim_step = 50000, nvt_s
             f.write('pbc                     = xyz       ; 3-D PBC \n')
             f.write('; Velocity generation \n')
             f.write('gen_vel                 = no        ; Velocity generation is off \n')
-
-
 
         with open('md.mdp', 'w') as f:
             f.write("; Made by Youngwoo Jung\n")

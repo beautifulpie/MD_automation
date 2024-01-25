@@ -139,7 +139,7 @@ class MDGui(QMainWindow):
         self.layout.addWidget(button)
 
     def get_number_input(self, click_function):
-        input_text, ok = QInputDialog.getText(self, "nStep", "How many step :", QLineEdit.Normal, "")
+        input_text, ok = QInputDialog.getText(self, "nStep", "How many step (아직 작동 안함):", QLineEdit.Normal, "")
 
         if ok and input_text.strip():
             try:
