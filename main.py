@@ -14,6 +14,8 @@ def main():
     npt_mdp = lines[12].strip('\n')
     itp_files = lines[15:]
     itp_files_name = md.extract_itp_files_names(itp_files)
+    box_diameter = 1.0
+
 
     print("====================================")
     print('\033[1m'+"MD_automation"+'\0333')
@@ -33,8 +35,9 @@ def main():
     print(f"input_molecule : {input_molecule}")
 
     # pdb2gmx 실행
-    pdb2gmx_command = f'gmx pdb2gmx -f {input_molecule}.pdb -o {input_molecule}_processed.gro -water spce -p topol.top -ignh'
+    pdb2gmx_command = f'gmx pdb2gmx -f {input_molecule}.pdb -o {input_molecule}_processed.gro -water spce -p topol.top'
     subprocess.run(pdb2gmx_command, shell=True, check=True)
+
     print("pdb2gmx 완료")
     
     md.update_top_file(top_file_path, itp_files_name)
@@ -66,16 +69,13 @@ def main():
     commands = [
         f'gmx grompp -f {minimization_mdp} -c {input_molecule}_solv.gro -p topol.top -o em.tpr -maxwarn 10 -r {input_molecule}_solv.gro',    # 에너지 최적화 준비
         f'gmx mdrun -v -deffnm em',  # 에너지 최적화 실행
-        f'gmx make_ndx -f {input_molecule}_solv.gro -o {input_molecule}_solv.ndx',
-        #f'q',
+        f'echo "q" | gmx make_ndx -f {input_molecule}_solv.gro -o {input_molecule}_solv.ndx',
         f'gmx grompp -f {nvt_mdp} -c em.gro -r em.gro -p topol.top -o nvt.tpr -maxwarn 10 -n {input_molecule}_solv.ndx', # NVT 준비
         f'gmx mdrun -v -deffnm nvt', # NVT 실행
-        f'gmx make_ndx -f nvt.gro -o nvt.ndx',
-        #f'q',
+        f'echo "q" | gmx make_ndx -f nvt.gro -o nvt.ndx',
         f'gmx grompp -f {npt_mdp} -c nvt.gro -r nvt.gro -p topol.top -o npt.tpr -maxwarn 10 -n nvt.ndx', # NPT 준비
         f'gmx mdrun -v -deffnm npt', # NPT 실행
-        f'gmx make_ndx -f npt.gro -o npt.ndx',
-        #f'q',
+        f'echo "q" | gmx make_ndx -f npt.gro -o npt.ndx',
         f'gmx grompp -f {mdp_file_path} -c npt.gro -t npt.cpt -p topol.top -o md_0_1.tpr -maxwarn 10 -n npt.ndx', # MD 준비
         f'gmx mdrun -v -deffnm md_0_1 -nb gpu -ntmpi 1' # MD 실행
     ]
