@@ -14,7 +14,7 @@ def main():
     npt_mdp = lines[12].strip('\n')
     itp_files = lines[15:]
     itp_files_name = md.extract_itp_files_names(itp_files)
-    box_diameter = 1.0
+    box_diameter = float(input('\033[33m' + '박스 크기를 입력하세요 (nm) '+ '\033[90m' + '[ 기본값 : 1.0 ]' + '\033[33m' + " : " + '\033[0m').strip() or "1.0")
 
 
     print("====================================")
