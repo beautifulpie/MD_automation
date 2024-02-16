@@ -33,8 +33,8 @@ def cleanup_files():
     subprocess.run('rm posre.itp', shell=True, check=False)
     #subprocess.run('rm *.gro', shell=True, check=False)
     subprocess.run('rm *.top', shell=True, check=False)
-    subprocess.run('rm *.trr', shell=True, check=False)
-    subprocess.run('rm *.tpr', shell=True, check=False)
+    #subprocess.run('rm *.trr', shell=True, check=False)
+    #   subprocess.run('rm *.tpr', shell=True, check=False)
     subprocess.run('rm *.log', shell=True, check=False)
 
 def print_rotating_bar(duration_seconds=3):
@@ -83,6 +83,19 @@ def update_top_file(top_file_path, itp_files_name):
     except Exception as e:
         print(f"오류 발생: {e}")
 
+def account()
+
+def command_runner(command, message):
+    print(f"Command : {command}")
+    try:
+        subprocess.run(command, shell=True, check=True)
+        print(message)
+        print ("====================================")
+    except subprocess.CalledProcessError as e:
+        print(f"오류 발생: {e}")
+        print ("====================================")
+
+
 def additional_job():
         # 사용자 입력 및 추가 계산 실행
     user_input = input("계산할 것을 선택하세요. (1: Energy, 2: RMSD, 3: RMSF, 4: Gyrate) : ")
@@ -105,6 +118,29 @@ def additional_job():
             command = f'gmx gyrate -s md_0_1.tpr -f md_0_1.xtc -o gyrate.xvg'
             run_gmx_command(command, "Gyrate 계산 완료")
             
+
+def make_ndx(input_file_name = 'index'):
+    try:
+        command = f'echo "q" | gmx make_ndx -f {input_file_name}.gro -o {input_file_name}.ndx '
+        run_gmx_command(command, "ndx 파일 생성 완료")
+    except:
+        print("ndx 파일 생성 오류 발생"
+
+def grompp(mdp_file_name = 'minim', gro_file_name = 'md_0_1', top_file_name = 'topol', output_file_name = 'md_0_1.tpr'):
+    try:
+        make_ndx(input_file_name = gro_file_name + ".gro")
+        command = f'gmx grompp -f {mdp_file_name}.mdp -c {gro_file_name}.gro -p {top_file_name}.top -o {output_file_name}.tpr -n {gro_file_name}.ndx -maxwarn 3'
+        run_gmx_command(command, "grompp 완료")
+    except:
+        print("grompp 오류 발생")
+
+def mdrun(input_file_name = 'md_0_1'):
+    try:
+        command = f'gmx mdrun -v -deffnm {input_file_name} -nb gpu -ntmpi 1'
+        run_gmx_command(command, "mdrun 완료")
+    except:
+        print("mdrun 오류 발생")
+
 
 def generate_mdp_file(job_name = 'Molecular_dynamics', minim_step = 50000, nvt_step = 50000, npt_step = 50000, md_step = 500000, calculation_molecules = ['Protein', 'Non-Protein']):
     try : 
