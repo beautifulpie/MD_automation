@@ -4,7 +4,7 @@ Made by Jung Youngwoo
 From Spider_core 
 
 ## Usage
-1. Install the GROMACS (https://tutorials.gromacs.org/), VMD(https://www.ks.uiuc.edu/Research/vmd/) or Access the port 51000, cuop account
+1. Install the GROMACS (https://tutorials.gromacs.org/), VMD(https://www.ks.uiuc.edu/Research/vmd/)
 2. Run the code below
 ```shell
 python GUI.py
